@@ -4,7 +4,7 @@ const app = express();
 app.use(express.json());
 import { sequelize } from "./models";
 import Book from "./models/book.model";
-import Autor from "./models/autor.model";
+import Autor from "./models/author.model";
 import appRouter from "./routes";
 
 app.post("/sync", async (req, res) => {

@@ -8,35 +8,41 @@ import {
   NotEmpty,
   BelongsTo,
   ForeignKey,
+  IsUUID,
+  Default,
 } from "sequelize-typescript";
-import Autor from "./autor.model";
+import { Optional, UUIDV4 } from "sequelize";
+import Author from "./author.model";
 
 export interface BookInterface {
-  id?: number;
+  id: string;
   title: string;
-  autorId: number;
-  autor: Autor;
+  authorId?: string;
+  author?: Author;
 }
+
+export interface BookCreationAttributes extends Optional<BookInterface, "id"> {}
 
 @Table({
   tableName: "book",
   timestamps: true,
 })
-export default class Book extends Model implements BookInterface {
-  @AutoIncrement
+export default class Book extends Model<BookInterface, BookCreationAttributes> {
   @PrimaryKey
+  @IsUUID(4)
+  @Default(UUIDV4)
   @Column
-  id: number;
+  id: string;
 
   @AllowNull(false)
   @NotEmpty
   @Column
   title: string;
 
-  @ForeignKey(() => Autor)
+  @ForeignKey(() => Author)
   @Column
-  autorId: number;
+  authorId: string;
 
-  @BelongsTo(() => Autor)
-  autor: Autor;
+  @BelongsTo(() => Author)
+  author: Author;
 }

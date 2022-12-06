@@ -2,7 +2,7 @@
   "local": {
     "username": "root",
     "password": "",
-    "database": "autor_libro_sequelize",
+    "database": "library_seq_db",
     "host": "localhost",
     "dialect": "mysql",
     "port": "3306"
