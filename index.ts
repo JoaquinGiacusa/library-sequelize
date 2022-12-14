@@ -1,11 +1,15 @@
-import { Op } from "sequelize";
 import express from "express";
+import { sequelize } from "./models";
+import appRouter from "./routes";
+import cors from "cors";
+
 const app = express();
 app.use(express.json());
-import { sequelize } from "./models";
-import Book from "./models/book.model";
-import Autor from "./models/author.model";
-import appRouter from "./routes";
+app.use(
+  cors({
+    origin: "http://localhost:3001",
+  })
+);
 
 app.post("/sync", async (req, res) => {
   sequelize

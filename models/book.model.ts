@@ -10,9 +10,12 @@ import {
   ForeignKey,
   IsUUID,
   Default,
+  BelongsToMany,
+  HasMany,
 } from "sequelize-typescript";
 import { Optional, UUIDV4 } from "sequelize";
 import Author from "./author.model";
+import Rental from "./rental.model";
 
 export interface BookInterface {
   id: string;
@@ -40,9 +43,13 @@ export default class Book extends Model<BookInterface, BookCreationAttributes> {
   title: string;
 
   @ForeignKey(() => Author)
+  @AllowNull(false)
   @Column
   authorId: string;
 
   @BelongsTo(() => Author)
   author: Author;
+
+  @HasMany(() => Rental)
+  rentals: Rental[];
 }

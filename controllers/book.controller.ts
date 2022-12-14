@@ -1,6 +1,7 @@
 import Book, { BookCreationAttributes } from "../models/book.model";
 import Author from "../models/author.model";
 import { RequestHandler } from "express";
+import { where } from "sequelize";
 
 const getAllBook: RequestHandler = async (req, res) => {
   const allBooks = await Book.findAll();
@@ -8,22 +9,38 @@ const getAllBook: RequestHandler = async (req, res) => {
 };
 
 const createBook: RequestHandler = async (req, res) => {
-  const props = req.body as BookCreationAttributes;
+  try {
+    const bookData = req.body as BookCreationAttributes;
 
-  const book = await Book.create(props, { include: [Author] });
-  // const book = await Book.create({ title });
-  return res.json(book);
-  // const autor = await Autor.findByPk(autorId);
-
-  // if (!autor) {
-  //   return res.json({ message: "Autor no encontrado" });
-  // }
-
-  // const books = await Book.create({
-  //   title: title,
-  //   autorId: autorId,
-  // });
-  // return res.json({ books });
+    const book = await Book.create(bookData, { include: [Author] });
+    if (!book) {
+      return res.json({ message: "error al crear libro" });
+    }
+    return res.json({ message: "libro creado exitosamente", book });
+  } catch (error) {
+    return res.json({ error });
+  }
 };
 
-export default { getAllBook, createBook };
+const updateBook: RequestHandler = async (req, res) => {
+  // console.log(req.params.id);
+
+  try {
+    const { id } = req.params;
+    const bookData = req.body as BookCreationAttributes;
+
+    const book = await Book.findByPk(id);
+    if (!book) {
+      return res.json({ message: "libro no encontrado" });
+    }
+
+    book?.set(bookData);
+    await book?.save();
+
+    return res.json({ message: "libro actualizado exitosamente", book });
+  } catch (error) {
+    return res.json({ error });
+  }
+};
+
+export default { getAllBook, createBook, updateBook };

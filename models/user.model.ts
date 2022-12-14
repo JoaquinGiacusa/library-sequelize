@@ -1,4 +1,3 @@
-import { Optional, UUIDV4 } from "sequelize";
 import {
   Model,
   Table,
@@ -7,36 +6,34 @@ import {
   Column,
   AllowNull,
   NotEmpty,
+  BelongsTo,
   ForeignKey,
-  HasMany,
   IsUUID,
   Default,
   BelongsToMany,
+  HasMany,
 } from "sequelize-typescript";
-import Book from "./book.model";
+import { Optional, UUIDV4 } from "sequelize";
+import Author from "./author.model";
 import Rental from "./rental.model";
 
-export interface AuthorInterface {
+export interface UserInterface {
   id: string;
   firstName: string;
   lastName: string;
+  age: number;
 }
 
-export interface AuthorCreationAttributes
-  extends Optional<AuthorInterface, "id"> {}
+export interface UserCreationAttributes extends Optional<UserInterface, "id"> {}
 
 @Table({
-  tableName: "author",
+  tableName: "user",
   timestamps: true,
 })
-export default class Author extends Model<
-  AuthorInterface,
-  AuthorCreationAttributes
-> {
+export default class User extends Model<UserInterface, UserCreationAttributes> {
   @PrimaryKey
   @IsUUID(4)
   @Default(UUIDV4)
-  @NotEmpty
   @Column
   id: string;
 
@@ -50,6 +47,11 @@ export default class Author extends Model<
   @Column
   lastName: string;
 
-  @HasMany(() => Book)
-  book: Book[];
+  @AllowNull(false)
+  @NotEmpty
+  @Column
+  age: number;
+
+  @HasMany(() => Rental)
+  rentals: Rental[];
 }
