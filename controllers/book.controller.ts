@@ -23,8 +23,6 @@ const createBook: RequestHandler = async (req, res) => {
 };
 
 const updateBook: RequestHandler = async (req, res) => {
-  // console.log(req.params.id);
-
   try {
     const { id } = req.params;
     const bookData = req.body as BookCreationAttributes;

@@ -2,7 +2,11 @@ import Rental, { RentalCreationAttributes } from "../models/rental.model";
 import { RequestHandler } from "express";
 
 const createRental: RequestHandler = async (req, res) => {
-  const { bookId, userId } = req.body as RentalCreationAttributes;
+  const { bookId } = req.body as RentalCreationAttributes;
+
+  //@ts-ignore
+  const user = req.user;
+  const userId = user.id;
 
   const fourteenDaysInMillis = 1209600000;
   const rentalEndDate = new Date(Date.now() + fourteenDaysInMillis);
@@ -10,9 +14,9 @@ const createRental: RequestHandler = async (req, res) => {
   const rental = await Rental.create({ bookId, userId, rentalEndDate });
   try {
     if (!rental) {
-      return res.json({ message: "error al crear rental" });
+      return res.json({ message: "Failed to create new Rental" });
     }
-    return res.json({ message: "rental creada exitosamente", rental });
+    return res.json({ message: "Rental has been created!" });
   } catch (error) {
     return res.json({ error });
   }

@@ -29,7 +29,7 @@ app.post("/sync", async (req, res) => {
     });
 });
 
-app.use(appRouter);
+app.use("/api", appRouter);
 
 app.listen(3000, () => {
   return console.log(`Server running on 3000`);

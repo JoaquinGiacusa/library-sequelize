@@ -12,6 +12,8 @@ import {
   Default,
   BelongsToMany,
   HasMany,
+  IsEmail,
+  Unique,
 } from "sequelize-typescript";
 import { Optional, UUIDV4 } from "sequelize";
 import Author from "./author.model";
@@ -19,9 +21,10 @@ import Rental from "./rental.model";
 
 export interface UserInterface {
   id: string;
+  email: string;
+  password: string;
   firstName: string;
   lastName: string;
-  age: number;
 }
 
 export interface UserCreationAttributes extends Optional<UserInterface, "id"> {}
@@ -39,6 +42,18 @@ export default class User extends Model<UserInterface, UserCreationAttributes> {
 
   @AllowNull(false)
   @NotEmpty
+  @IsEmail
+  @Unique
+  @Column
+  email: string;
+
+  @AllowNull(false)
+  @NotEmpty
+  @Column
+  password: string;
+
+  @AllowNull(false)
+  @NotEmpty
   @Column
   firstName: string;
 
@@ -46,11 +61,6 @@ export default class User extends Model<UserInterface, UserCreationAttributes> {
   @NotEmpty
   @Column
   lastName: string;
-
-  @AllowNull(false)
-  @NotEmpty
-  @Column
-  age: number;
 
   @HasMany(() => Rental)
   rentals: Rental[];
