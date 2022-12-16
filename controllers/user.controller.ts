@@ -2,22 +2,16 @@ import User, { UserCreationAttributes } from "../models/user.model";
 import { RequestHandler } from "express";
 import bcrypt from "bcrypt";
 
-const myProfile: RequestHandler = async (req, res) => {
-  //@ts-ignore
-  const userId = req.user.id;
+const getMe: RequestHandler = async (req, res) => {
+  const user = res.locals.user;
 
-  const user = await User.findByPk(userId);
+  //const user = await User.findByPk(userId);
 
   if (!user) {
     return res.status(400).json({ message: "User not found" });
   }
 
-  return res.status(200).json({
-    id: user.id,
-    email: user.email,
-    firstName: user.firstName,
-    lastName: user.lastName,
-  });
+  return res.status(200).json({ user });
 };
 
 const updateUser: RequestHandler = async (req, res) => {
@@ -49,4 +43,4 @@ const updateUser: RequestHandler = async (req, res) => {
   }
 };
 
-export default { myProfile, updateUser };
+export default { getMe, updateUser };

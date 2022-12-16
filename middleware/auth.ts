@@ -1,20 +1,37 @@
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Request, RequestHandler, Response } from "express";
 import jwt from "jsonwebtoken";
+import User from "../models/user.model";
 
-const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
+type Payload = {
+  email: string;
+  firstName: string;
+  lastName: string;
+  id: string;
+};
+
+// const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
+const authMiddleware: RequestHandler = async (req, res, next) => {
   try {
     if (!req.headers.authorization) {
       return res.status(400).json({ message: "Invalid request" });
     }
 
     const token = req.headers.authorization.split(" ")[1];
-    var decoded = jwt.verify(token, "gj383fh13sf8");
+    var payload = jwt.verify(token, "gj383fh13sf8") as Payload;
+    console.log({ id: payload.id });
+    const userId = payload.id;
+    const user = await User.findByPk(userId);
+    console.log(user);
 
-    // @ts-ignore
-    req.user = decoded;
+    if (!user) {
+      throw new Error("user not founds");
+    }
+
+    res.locals.user = user;
+    res.locals.user.password = undefined;
     next();
   } catch (error) {
-    return res.status(400).json(error);
+    return res.status(400).json({ message: error });
   }
 };
 
