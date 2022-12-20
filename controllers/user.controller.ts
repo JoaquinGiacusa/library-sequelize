@@ -5,8 +5,6 @@ import bcrypt from "bcrypt";
 const getMe: RequestHandler = async (req, res) => {
   const user = res.locals.user;
 
-  //const user = await User.findByPk(userId);
-
   if (!user) {
     return res.status(400).json({ message: "User not found" });
   }
@@ -18,8 +16,7 @@ const updateUser: RequestHandler = async (req, res) => {
   try {
     const { email, firstName, lastName, password, repeatPassword } = req.body;
 
-    //@ts-ignore
-    const userId = req.user.id;
+    const user = res.locals.user;
 
     if (password != repeatPassword) {
       return res.status(400).json({ message: "password not match" });
@@ -30,7 +27,7 @@ const updateUser: RequestHandler = async (req, res) => {
       try {
         await User.update(
           { email, firstName, lastName, password: hash },
-          { where: { id: userId } }
+          { where: { id: user.id } }
         );
 
         return res.json({ message: "Your account has been updated!" });

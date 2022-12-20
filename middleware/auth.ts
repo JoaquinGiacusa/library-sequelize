@@ -18,10 +18,8 @@ const authMiddleware: RequestHandler = async (req, res, next) => {
 
     const token = req.headers.authorization.split(" ")[1];
     var payload = jwt.verify(token, "gj383fh13sf8") as Payload;
-    console.log({ id: payload.id });
-    const userId = payload.id;
-    const user = await User.findByPk(userId);
-    console.log(user);
+
+    const user = await User.findByPk(payload.id);
 
     if (!user) {
       throw new Error("user not founds");
